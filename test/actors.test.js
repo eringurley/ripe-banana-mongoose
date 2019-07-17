@@ -51,4 +51,21 @@ describe('actors routes', () => {
         });
       });
   });
+
+  it('can get an actor by id', async() => {
+    const actor = await Actor.create(
+      { name: 'Erin', dob: '08-27-1992', pob: 'Alabama' },
+    );
+
+    return request(app)
+      .get(`/api/v1/actors/${actor._id}`)
+      .then(res => {
+        const actorJSON = JSON.parse(JSON.stringify(actor));
+        expect(res.body).toEqual({
+          ...actorJSON, 
+          name: 'Erin'
+        });
+      });
+  });
 });
+

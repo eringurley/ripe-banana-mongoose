@@ -48,4 +48,20 @@ describe('studio routes', () => {
         });
       });
   });
+
+  it('can get a studio by id', async() => {
+    const studio = await Studio.create(
+      { name: 'Universal Studios', address: { city: 'Hollywood', state: 'California', country: 'US' } },
+    );
+
+    return request(app)
+      .get(`/api/v1/studios/${studio._id}`)
+      .then(res => {
+        const studioJSON = JSON.parse(JSON.stringify(studio));
+        expect(res.body).toEqual({
+          ...studioJSON, 
+          name: 'Universal Studios'
+        });
+      });
+  });
 });
