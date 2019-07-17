@@ -31,4 +31,21 @@ describe('studio routes', () => {
         });
       });
   });
+
+  it('can get a list of studios', async() => {
+    const studios = await Studio.create([
+      { name: 'Universal Studios', address: { city: 'Hollywood', state: 'California', country: 'US' } },
+      { name: 'Warner Bros', address: { city: 'Hollywood', state: 'California', country: 'US' } },
+      { name: 'MGM', address: { city: 'Hollywood', state: 'California', country: 'US' } },
+    ]);
+
+    return request(app)
+      .get('/api/v1/studios')
+      .then(res => {
+        const studiosJSON = JSON.parse(JSON.stringify(studios));
+        studiosJSON.forEach(studio => {
+          expect(res.body).toContainEqual(studio);
+        });
+      });
+  });
 });
