@@ -6,6 +6,7 @@ const connect = require('../lib/utils/connect');
 const mongoose = require('mongoose');
 const Studio = require('../lib/models/Studio');
 const Film = require('../lib/models/Film');
+const Actor = require('../lib/models/Actor');
 
 describe('app routes', () => {
   beforeAll(() => {
@@ -17,8 +18,10 @@ describe('app routes', () => {
   });
 
   let studio = null;
+  let actor = null;
   beforeEach(async() => {
     studio = JSON.parse(JSON.stringify(await Studio.create({ name: 'Disney' })));
+    actor = JSON.parse(JSON.stringify(await Actor.create({ name: 'Robin Williams' })));
   });
 
 
@@ -29,14 +32,14 @@ describe('app routes', () => {
   it('can POST a film', () => {
     return request(app)
       .post('/api/v1/films')
-      .send({ title: 'Aladin', studio: studio.name, released: 1992, cast: { role: '', actor: 'Robin Williams' } })
+      .send({ title: 'Aladin', studio: studio.name, released: 1992, cast: { role: '', actor: actor.name } })
       .then(res => {
         expect(res.body).toEqual({
           _id: expect.any(String), 
           title: 'Aladin', 
           studio: studio.name, 
           released: 1992, 
-          cast: { role: '', actor: 'Robin Williams' },
+          cast: { role: '', actor: actor.name },
           __v: 0
         });
       });
