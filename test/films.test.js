@@ -32,15 +32,31 @@ describe('app routes', () => {
   it('can POST a film', () => {
     return request(app)
       .post('/api/v1/films')
-      .send({ title: 'Aladin', studio: studio.name, released: 1992, cast: { role: '', actor: actor.name } })
+      .send({ title: 'Aladin', studio: studio._id, released: 1992, cast: [{ role: '', actor: actor._id }] })
       .then(res => {
         expect(res.body).toEqual({
           _id: expect.any(String), 
           title: 'Aladin', 
-          studio: studio.name, 
+          studio: studio._id, 
           released: 1992, 
-          cast: { role: '', actor: actor.name },
+          cast: [{ role: '', actor: actor._id, _id: expect.any(String) }],
           __v: 0
+        });
+      });
+  });
+
+  it('can get a list of films', async() => {
+    const films = await Film.create([ 
+      { title: 'Aladin', studio: studio._id, released: 1992, cast: [{ role: '', actor: actor._id }] },
+      { title: 'Toy Story', studio: studio._id, released: 1992, cast: [{ role: '', actor: actor._id }] }
+    ]);
+
+    return request(app)
+      .get('/api/v1/films')
+      .then(res => {
+        const filmsJSON = JSON.parse(JSON.stringify(films));
+        filmsJSON.forEach(film => {
+          expect(res.body).toContainEqual(film);
         });
       });
   });
