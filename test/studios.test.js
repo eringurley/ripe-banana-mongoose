@@ -5,6 +5,7 @@ const app = require('../lib/app');
 const connect = require('../lib/utils/connect');
 const mongoose = require('mongoose');
 const Studio = require('../lib/models/Studio');
+const Film = require('../lib/models/Film');
 
 describe('studio routes', () => {
   beforeAll(() => {
@@ -13,6 +14,18 @@ describe('studio routes', () => {
 
   beforeEach(() => {
     return mongoose.connection.dropDatabase();
+  });
+
+  let film = null;
+  let studio = null;
+  beforeEach(async() => {
+    studio = await Studio.create({
+      name: 'Universal Studios', 
+      address: { city: 'Hollywood', 
+        state: 'California', 
+        country: 'US' },
+    });
+    film = JSON.parse(JSON.stringify(await Film.create({ title: 'aladdin', studio: studio._id, released: 1992, cast: [] })));
   });
 
   afterAll(() => {
@@ -30,7 +43,7 @@ describe('studio routes', () => {
           __v: 0
         });
       });
-  });
+  }); 
 
   it('can get a list of studios', async() => {
     const studios = await Studio.create([
@@ -50,9 +63,6 @@ describe('studio routes', () => {
   });
 
   it('can get a studio by id', async() => {
-    const studio = await Studio.create(
-      { name: 'Universal Studios', address: { city: 'Hollywood', state: 'California', country: 'US' } },
-    );
 
     return request(app)
       .get(`/api/v1/studios/${studio._id}`)
@@ -60,7 +70,8 @@ describe('studio routes', () => {
         const studioJSON = JSON.parse(JSON.stringify(studio));
         expect(res.body).toEqual({
           ...studioJSON, 
-          name: 'Universal Studios'
+          name: 'Universal Studios',
+          films: [film]
         });
       });
   });

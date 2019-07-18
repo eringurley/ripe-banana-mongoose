@@ -24,7 +24,6 @@ describe('app routes', () => {
     actor = JSON.parse(JSON.stringify(await Actor.create({ name: 'Robin Williams' })));
   });
 
-
   afterAll(() => {
     return mongoose.connection.close();
   });
