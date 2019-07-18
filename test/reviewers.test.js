@@ -30,5 +30,22 @@ describe('reviewers routes', () => {
         });
       });
   }); 
+
+  it('can get a list of reviewers', async() => {
+    const reviewers = await Reviewer.create([
+      { name: 'Eli', company: 'Alchemy' },
+      { name: 'Erin', company: 'Alchemy' },
+      { name: 'Emily', company: 'Alchemy' },
+    ]);
+    
+    return request(app)
+      .get('/api/v1/reviewers')
+      .then(res => {
+        const reviewersJSON = JSON.parse(JSON.stringify(reviewers));
+        reviewersJSON.forEach(reviewer => {
+          expect(res.body).toContainEqual(reviewer);
+        });
+      });
+  });
 });
 
