@@ -22,7 +22,7 @@ describe('reviewers routes', () => {
     return request(app)
       .post('/api/v1/reviewers')
       .send({ name: 'Eli', company: 'Alchemy' })
-      .then(res => () => {
+      .then(res => {
         expect(res.body).toEqual({
           _id: expect.any(String), 
           name: 'Eli', company: 'Alchemy', 
