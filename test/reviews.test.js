@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const Film = require('../lib/models/Film');
 const Reviewer = require('../lib/models/Reviewer');
 const Studio = require('../lib/models/Studio');
+const Review = require('../lib/models/Review');
 
 
 describe('reviews routes', () => {
@@ -17,7 +18,6 @@ describe('reviews routes', () => {
   beforeEach(() => {
     return mongoose.connection.dropDatabase();
   });
-  
 
   let studio = null;
   let film = null;
@@ -50,4 +50,20 @@ describe('reviews routes', () => {
         });
       });
   }); 
+
+  it('can get a list of reviews', async() => {
+    const reviews = await Review.create([
+      { reviewer: reviewer._id, rating: 3, review: 'Aladin was good', film: film._id },
+      { reviewer: reviewer._id, rating: 5, review: 'Aladin was great', film: film._id },
+    ]);
+    
+    return request(app)
+      .get('/api/v1/reviews')
+      .then(res => {
+        const reviewsJSON = JSON.parse(JSON.stringify(reviews));
+        reviewsJSON.forEach(review => {
+          expect(res.body).toContainEqual(review);
+        });
+      });
+  });
 });
