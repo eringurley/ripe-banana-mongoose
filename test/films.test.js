@@ -86,4 +86,14 @@ describe('app routes', () => {
         });
       });
   });
+
+  it('can delete a film by id', async() => {
+
+    return request(app)
+      .delete(`/api/v1/films/${film._id}`)
+      .then(res => {
+        const filmJSON = JSON.parse(JSON.stringify(film));
+        expect(res.body).toEqual(filmJSON);
+      });
+  });
 });
