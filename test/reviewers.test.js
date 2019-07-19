@@ -69,7 +69,6 @@ describe('reviewers routes', () => {
     return request(app)
       .get(`/api/v1/reviewers/${reviewer._id}`)
       .then(res => {
-        console.log(res.body)
         const reviewerJSON = JSON.parse(JSON.stringify(reviewer));
         expect(res.body).toEqual({
           ...reviewerJSON, 

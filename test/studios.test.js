@@ -75,13 +75,27 @@ describe('studio routes', () => {
         });
       });
   });
-  it('can delete a studio by id', async() => {
 
+  it('can delete a studio by id', async() => {
+    const studio = await Studio.create({
+      name: 'Universal Studios', 
+      address: { city: 'Hollywood', 
+        state: 'California', 
+        country: 'US' },
+    });
     return request(app)
       .delete(`/api/v1/studios/${studio._id}`)
       .then(res => {
         const studioJSON = JSON.parse(JSON.stringify(studio));
         expect(res.body).toEqual(studioJSON);
+      });
+  });
+
+  it('does not delete studio if has a film', async() => {
+    return request(app)
+      .delete(`/api/v1/studios/${studio._id}`)
+      .then(res => {
+        expect(res.body).toEqual({ message: 'Can not delete studio' });
       });
   });
 });
