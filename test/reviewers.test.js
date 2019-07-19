@@ -4,6 +4,10 @@ const request = require('supertest');
 const app = require('../lib/app');
 const connect = require('../lib/utils/connect');
 const mongoose = require('mongoose');
+const Studio = require('../lib/models/Studio');
+const Film = require('../lib/models/Film');
+const Actor = require('../lib/models/Actor');
+const Review = require('../lib/models/Review');
 const Reviewer = require('../lib/models/Reviewer');
 
 describe('reviewers routes', () => {
@@ -14,6 +18,20 @@ describe('reviewers routes', () => {
   beforeEach(() => {
     return mongoose.connection.dropDatabase();
   });
+
+  let studio = null;
+  let film = null;
+  let actor = null;
+  let review = null; 
+  let reviewer = null; 
+  beforeEach(async() => {
+    studio = JSON.parse(JSON.stringify(await Studio.create({ name: 'Disney' })));
+    actor = JSON.parse(JSON.stringify(await Actor.create({ name: 'Robin Williams' })));
+    film = JSON.parse(JSON.stringify(await Film.create({ title: 'Aladin', studio: studio._id, released: 1992, cast: [{ actor: actor._id }] })));
+    reviewer = JSON.parse(JSON.stringify(await Reviewer.create({ name: 'Eli', company: 'Alchemy' })));
+    review = JSON.parse(JSON.stringify(await Review.create({ review: 'It was good', film: film._id, rating: 3, reviewer: reviewer._id })));
+  });
+
 
   afterAll(() => {
     return mongoose.connection.close();
@@ -44,6 +62,30 @@ describe('reviewers routes', () => {
         const reviewersJSON = JSON.parse(JSON.stringify(reviewers));
         reviewersJSON.forEach(reviewer => {
           expect(res.body).toContainEqual(reviewer);
+        });
+      });
+  });
+
+  it('can get reviewers by id', async() => {
+    return request(app)
+      .get(`/api/v1/reviewers/${reviewer._id}`)
+      .then(res => {
+        console.log(res.body)
+        const reviewerJSON = JSON.parse(JSON.stringify(reviewer));
+        expect(res.body).toEqual({
+          ...reviewerJSON, 
+          _id: expect.any(String),
+          name: 'Eli', 
+          company: 'Alchemy',
+          reviews: [{ _id: expect.any(String),
+            rating: 3, 
+            review: 'It was good',
+            film: {
+              _id: expect.any(String), 
+              title: 'Aladin'
+            },
+          }],
+          __v: 0
         });
       });
   });

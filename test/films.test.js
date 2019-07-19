@@ -78,7 +78,9 @@ describe('app routes', () => {
           ...filmJSON, 
           title: 'Aladin', 
           studio: studio,
-          cast: [{ _id: expect.any(String), actor: { _id: expect.any(String), name: 'Robin Williams', __v: 0 } }], 
+          cast: [{ _id: expect.any(String), 
+            actor: { _id: expect.any(String), 
+              name: 'Robin Williams', __v: 0 } }], 
           reviews: [review], 
           __v: 0
         });
