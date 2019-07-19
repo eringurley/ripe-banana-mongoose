@@ -55,11 +55,10 @@ describe('studio routes', () => {
     return request(app)
       .get('/api/v1/studios')
       .then(res => {
-      //   const studiosJSON = JSON.parse(JSON.stringify(studios));
-      //   studiosJSON.forEach(studio => {
-      //     expect(res.body).toContainEqual(studio);
-      //   });
-      // });
+        const studiosJSON = JSON.parse(JSON.stringify(studios));
+        studiosJSON.forEach(() => {
+          expect(res.body).toContainEqual({ name: 'MGM', _id: expect.any(String) });
+        });
         expect(res.body).toEqual(expect.any(Array));
         expect(res.body[0]).toEqual({
           _id: expect.any(String), 
