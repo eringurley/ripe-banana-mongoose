@@ -22,14 +22,13 @@ describe('reviewers routes', () => {
   let studio = null;
   let film = null;
   let actor = null;
-  let review = null; 
   let reviewer = null; 
   beforeEach(async() => {
     studio = JSON.parse(JSON.stringify(await Studio.create({ name: 'Disney' })));
     actor = JSON.parse(JSON.stringify(await Actor.create({ name: 'Robin Williams' })));
     film = JSON.parse(JSON.stringify(await Film.create({ title: 'Aladin', studio: studio._id, released: 1992, cast: [{ actor: actor._id }] })));
     reviewer = JSON.parse(JSON.stringify(await Reviewer.create({ name: 'Eli', company: 'Alchemy' })));
-    review = JSON.parse(JSON.stringify(await Review.create({ review: 'It was good', film: film._id, rating: 3, reviewer: reviewer._id })));
+    await Review.create({ review: 'It was good', film: film._id, rating: 3, reviewer: reviewer._id });
   });
 
 
@@ -86,6 +85,20 @@ describe('reviewers routes', () => {
             },
           }],
           __v: 0
+        });
+      });
+  });
+
+  it('can update a reviewer with PUT by id', async() => {
+      
+    return request(app)
+      .put(`/api/v1/reviewers/${reviewer._id}`)
+      .send({ name: 'Ryan', company: 'Alchemy' })
+      .then(res => {
+        const reviewerJSON = JSON.parse(JSON.stringify(reviewer));
+        expect(res.body).toEqual({ 
+          ...reviewerJSON, 
+          name: 'Ryan'
         });
       });
   });
