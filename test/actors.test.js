@@ -99,4 +99,23 @@ describe('actors routes', () => {
         });
       });
   });
+  it('can delete an actor', async() => {
+    const actor = await Actor.create({ name: 'Erin', dob: '08-27-1992', pob: 'Alabama' });
+    return request(app)
+      .delete(`/api/v1/actors/${actor._id}`)
+      .then(res => {
+        const actorJSON = JSON.parse(JSON.stringify(actor));
+        expect(res.body).toEqual(actorJSON);
+      });
+  });
+
+  it('does not delete actor if in a film', async() => {
+    return request(app)
+      .delete(`/api/v1/actors/${actor._id}`)
+      .then(res => {
+        expect(res.body).toEqual({
+          message: 'Can not delete actor'
+        });
+      });
+  });
 });
