@@ -72,11 +72,11 @@ describe('studio routes', () => {
     return request(app)
       .get(`/api/v1/studios/${studio._id}`)
       .then(res => {
-        const studioJSON = JSON.parse(JSON.stringify(studio));
         expect(res.body).toEqual({
-          ...studioJSON, 
+          _id: expect.any(String), 
+          address: { city: 'Hollywood', state: 'California', country: 'US' }, 
           name: 'Universal Studios',
-          films: [film]
+          films: [{ _id: expect.any(String), title: film.title }]
         });
       });
   });
