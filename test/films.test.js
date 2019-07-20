@@ -75,16 +75,14 @@ describe('app routes', () => {
     return request(app)
       .get(`/api/v1/films/${film._id}`)
       .then(res => {
-        const filmJSON = JSON.parse(JSON.stringify(film));
         expect(res.body).toEqual({
-          ...filmJSON, 
           title: 'Aladin', 
-          studio: studio,
+          released: 1992,
+          studio: { _id: expect.any(String), name: studio.name },
           cast: [{ _id: expect.any(String), 
             actor: { _id: expect.any(String), 
-              name: 'Robin Williams', __v: 0 } }], 
-          reviews: [review], 
-          __v: 0
+              name: actor.name } }], 
+          reviews: [{ _id: expect.any(String), rating: review.rating, review: review.review, reviewer: { _id: expect.any(String), name: 'Eli' } }], 
         });
       });
   });
