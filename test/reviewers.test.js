@@ -59,8 +59,10 @@ describe('reviewers routes', () => {
       .get('/api/v1/reviewers')
       .then(res => {
         const reviewersJSON = JSON.parse(JSON.stringify(reviewers));
-        reviewersJSON.forEach(reviewer => {
-          expect(res.body).toContainEqual(reviewer);
+        reviewersJSON.forEach(() => {
+          expect(res.body).toContainEqual(
+            { _id: expect.any(String), name: 'Eli', company: 'Alchemy' }
+          );
         });
       });
   });
