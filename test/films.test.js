@@ -82,7 +82,7 @@ describe('app routes', () => {
           cast: [{ _id: expect.any(String), 
             actor: { _id: expect.any(String), 
               name: actor.name } }], 
-          reviews: [{ _id: expect.any(String), rating: review.rating, review: review.review, reviewer: { _id: expect.any(String), name: 'Eli' } }], 
+          reviews: [{ _id: expect.any(String), rating                        : review.rating, review: review.review, reviewer: { _id: expect.any(String), name: 'Eli' } }], 
         });
       });
   });
